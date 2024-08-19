@@ -1,15 +1,28 @@
-import { createServer } from "node:http";
+import cors from "cors";
 import "./bot";
 
+import express from "express";
 import { createYoga } from "graphql-yoga";
 import { userSchema } from "./Schema/UserSchema";
 
+const app = express();
+
+// Apply CORS middleware
+app.use(
+  cors({
+    origin: "*",
+  })
+);
+
+// Create Yoga server
 const yoga = createYoga({
   schema: userSchema,
 });
 
-const server = createServer(yoga);
+// Use Yoga as a middleware
+app.use("/graphql", yoga);
 
-server.listen(4000, () => {
+// Start the server
+app.listen(4000, () => {
   console.log("Server is running on http://localhost:4000");
 });
